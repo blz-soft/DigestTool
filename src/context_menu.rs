@@ -29,6 +29,7 @@ pub fn set_to_context_menu() -> Result< (), std::io::Error> {
 /// コンテクストメニューにキーを追加する
 /// 引数のパスのキーを追加します
 /// 引数には`HKCU:SOFTWARE\Classes\Directory\Background\shell\`の後に付ける値を入力する
+#[allow(dead_code)]
 fn set_key_to_directory_background(post_path: &str) -> Result< (), std::io::Error> {
     let pre_path = r"HKCU:SOFTWARE\Classes\Directory\Background\shell\";
     let result_set_key = std::process::Command::new("powershell.exe")
@@ -41,6 +42,7 @@ fn set_key_to_directory_background(post_path: &str) -> Result< (), std::io::Erro
 }
 
 /// コンテクストメニューのアイテムを追加する
+#[allow(dead_code)]
 fn set_property_to_directory_background(post_path: &str, name: &str, value: &str) -> Result< (), std::io::Error> {
     let pre_path = r"HKCU:SOFTWARE\Classes\Directory\Background\shell\";
     let result_set_key = std::process::Command::new("powershell.exe")
@@ -88,6 +90,7 @@ pub fn remove_from_context_menu() -> Result< (), std::io::Error> {
 
 /// コンテクストメニューのコマンドを削除
 /// 引数のkeyを削除します
+#[allow(dead_code)]
 fn remove_key_from_dircetory_background(post_path: &str) -> Result< (), std::io::Error> {
     let pre_path = r"HKCU:SOFTWARE\Classes\Directory\Background\shell\";
     let result_remove_key = std::process::Command::new("powershell.exe")
