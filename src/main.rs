@@ -47,23 +47,38 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
     println!("ハッシュ値を計算しています。");
 
     let (file_size, hash_value)  = match digest_algorithm {
-        cli_arg_accepter::DigestAlgorithm::Sha256 => {
-            let hash_result = hash::sha256(&mut input_file_reader);
-
+        cli_arg_accepter::DigestAlgorithm::Sha2_256 => {
+            let hash_result = hash::sha2_256(&mut input_file_reader);
             let (file_size, hash_value) = match hash_result {
                 Err(_e) => {println!("ファイルを読み込みできませんでした。"); std::process::exit(0)},
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
         },
-        cli_arg_accepter::DigestAlgorithm::Sha512 => {
-            let hash_result = hash::sha512(&mut input_file_reader);
+        cli_arg_accepter::DigestAlgorithm::Sha2_512 => {
+            let hash_result = hash::sha2_512(&mut input_file_reader);
             let (file_size, hash_value) = match hash_result {
                 Err(_e) => {println!("ファイルを読み込みできませんでした。"); std::process::exit(0)},
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
-        }
+        },
+        cli_arg_accepter::DigestAlgorithm::Sha3_256 => {
+            let hash_result = hash::sha3_256(&mut input_file_reader);
+            let (file_size, hash_value) = match hash_result {
+                Err(_e) => {println!("ファイルを読み込みできませんでした。"); std::process::exit(0)},
+                Ok(result) => result,
+            };
+            (file_size, hash_value.to_vec())
+        },
+        cli_arg_accepter::DigestAlgorithm::Sha3_512 => {
+            let hash_result = hash::sha3_512(&mut input_file_reader);
+            let (file_size, hash_value) = match hash_result {
+                Err(_e) => {println!("ファイルを読み込みできませんでした。"); std::process::exit(0)},
+                Ok(result) => result,
+            };
+            (file_size, hash_value.to_vec())
+        },
     };
 
     let post_time = chrono::Local::now();
@@ -75,6 +90,7 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
 }
 
 fn setup() {
+    println!("コンテクストメニューにコマンドを追加しています。");
     if context_menu::set_to_context_menu().is_ok() {
         println!("コンテクストメニューに追加出来ました。")
     } else {
@@ -83,6 +99,7 @@ fn setup() {
 }
 
 fn cleanup() {
+    println!("コンテクストメニューにコマンドを削除しています。");
     if context_menu::remove_from_context_menu().is_ok() {
         println!("コンテクストメニューから削除しました。");
     } else {

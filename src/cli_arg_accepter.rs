@@ -4,8 +4,10 @@
 use clap::*;
 
 pub enum DigestAlgorithm {
-    Sha256,
-    Sha512
+    Sha2_256,
+    Sha2_512,
+    Sha3_256,
+    Sha3_512,
 }
 
 pub enum Mode {
@@ -22,9 +24,12 @@ pub fn accept_cli_arg() -> (Option<String>, DigestAlgorithm, Mode) {
         .long("input_file")
         .takes_value(true)
         .value_name("FILE"))
-    .arg(Arg::with_name("sha512")
-        .long("sha512")
-        .takes_value(false))
+    .arg(Arg::with_name("digest")
+        .help("ハッシュアルゴリズムを選択できます。利用できるアルゴリズム: [sha2_256, sha2_512, sha3_256, sha3_512]デフォルト(sha2_256)")
+        .short("d")
+        .long("digest")
+        .multiple(false)
+        .takes_value(true))
     .arg(Arg::with_name("setup")
         .long("setup")
         .takes_value(false))
@@ -38,9 +43,21 @@ pub fn accept_cli_arg() -> (Option<String>, DigestAlgorithm, Mode) {
         Some(file) => Some(file.to_string()),
     }; 
 
-    let digest_algorithm = match matches.occurrences_of("sha512") {
-        0 => DigestAlgorithm::Sha256,
-        _ => DigestAlgorithm::Sha512,
+    let digest_algorithm = match matches.value_of("digetst") {
+        Some(algorithm) => match algorithm {
+            "sha2_256" => DigestAlgorithm::Sha2_256,
+            "sha2_512" => DigestAlgorithm::Sha2_512,
+            "sha3_256" => DigestAlgorithm::Sha3_256,
+            "sha3_512" => DigestAlgorithm::Sha3_512,
+            _ => {
+                println!("ハッシュアルゴリズムの入力が誤っています オプション-hで利用できるハッシュアルゴリズムを確認できます。");
+                println!("Enterキーを押すと終了します");
+                let mut word = String::new();
+                std::io::stdin().read_line(&mut word).ok();
+                std::process::exit(0);
+            },
+        }
+        None => DigestAlgorithm::Sha2_256,
     };
     
     let mode = match (matches.occurrences_of("setup"), matches.occurrences_of("clean_up")) {
