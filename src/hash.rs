@@ -27,7 +27,7 @@ pub fn sha2_256(input_reader: &mut impl std::io::Read) -> Result<(u64, HashValue
     // 結果を取り出す
     let hasher = hasher.into_inner()?;
     let hash_value = hasher.finalize();
-    return Ok((data_size, hash_value));
+    Ok((data_size, hash_value))
 }
 
 /// #sha512関数
@@ -47,7 +47,7 @@ pub fn sha2_512(input_reader: &mut impl std::io::Read) -> Result<(u64, HashValue
     let data_size = hash_read_result?;
     let hasher = hasher.into_inner()?;
     let hash_value = hasher.finalize();
-    return Ok((data_size, hash_value));
+    Ok((data_size, hash_value))
 }
 
 /// #sha3_256関数
@@ -67,7 +67,7 @@ pub fn sha3_256(input_reader: &mut impl std::io::Read) -> Result<(u64, HashValue
     let data_size = hash_read_result?;
     let hasher = hasher.into_inner()?;
     let hash_value = hasher.finalize();
-    return Ok((data_size, hash_value));
+    Ok((data_size, hash_value))
 }
 
 /// #sha3_512関数
@@ -87,7 +87,7 @@ pub fn sha3_512(input_reader: &mut impl std::io::Read) -> Result<(u64, HashValue
     let data_size = hash_read_result?;
     let hasher = hasher.into_inner()?;
     let hash_value = hasher.finalize();
-    return Ok((data_size, hash_value));
+    Ok((data_size, hash_value))
 }
 
 #[cfg(test)]

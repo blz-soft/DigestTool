@@ -85,7 +85,7 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
     println!("ファイルサイズ: {}MB", file_size / 1_000_000);
     print!("ハッシュ値: ");
     for byte in hash_value { print!("{:x}, ", byte);}
-    println!("");
+    println!();
     println!("所要時間: {:?}", post_time - pre_time);
 }
 

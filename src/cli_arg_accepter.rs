@@ -38,10 +38,7 @@ pub fn accept_cli_arg() -> (Option<String>, DigestAlgorithm, Mode) {
         .takes_value(false))
     .get_matches();
 
-    let input_file_path = match matches.value_of_lossy("input_file"){
-        None => None,
-        Some(file) => Some(file.to_string()),
-    }; 
+    let input_file_path = matches.value_of_lossy("input_file").map(|file| file.to_string()); 
 
     let digest_algorithm = match matches.value_of("digetst") {
         Some(algorithm) => match algorithm {
@@ -73,5 +70,5 @@ pub fn accept_cli_arg() -> (Option<String>, DigestAlgorithm, Mode) {
         },
     };
 
-    return (input_file_path, digest_algorithm, mode);
+    (input_file_path, digest_algorithm, mode)
 }
