@@ -1,0 +1,15 @@
+[package]
+name = "DigestTool"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chacha20 = "0.8.1"
+chrono = "0.4.19"
+sha2 = "0.9.6"
+generic-array = "0.14.4"
+typenum = "1.14.0"
+clap = "2.33.3"
+hex-literal = "0.3.3"
