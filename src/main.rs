@@ -17,7 +17,7 @@ fn main() {
         cli_arg_accepter::Mode::Digest => digest(input_file_path, digest_algorithm),
         cli_arg_accepter::Mode::SetUp => setup(),
         cli_arg_accepter::Mode::CleanUp => cleanup(),
-        cli_arg_accepter::Mode::GUI => gui(),
+        cli_arg_accepter::Mode::Gui => gui(),
     }
 
     
@@ -225,12 +225,12 @@ fn gui() {
     let handler = nwg::full_bind_event_handler(&window.handle, move |evt, _evt_data, handle| {
         use nwg::Event as E;
 
+        #[allow(clippy::single_match)]
         match evt {
             // ボタンが押されたイベントすべてを受け取る?
             E::OnButtonClick => {
                 // コントロールハンドラー? ControlHandleっていうのはウェジットとかの部品っぽい
-                let button_set = &handle == &button_set_context_menu;
-                if button_set {
+                if handle == button_set_context_menu {
                     debug!("右クリックメニューに追加します");
                     if context_menu::set_to_context_menu().is_ok() {
                         nwg::modal_info_message(&events_window.handle, "Digest Tool", "右クリックメニューに追加しました。");
@@ -238,7 +238,7 @@ fn gui() {
                         nwg::modal_info_message(&events_window.handle, "Digest Tool", "右クリックメニューに追加できませんでした。");
                     }
                     // ファイルダイアログ
-                } else if &handle == &button_remove_context_menu{
+                } else if handle == button_remove_context_menu{
                     debug!("右クリックメニューにから削除します");
                     if context_menu::remove_from_context_menu().is_ok() {
                         nwg::modal_info_message(&events_window.handle, "Digest Tool", "右クリックメニューから削除しました。");

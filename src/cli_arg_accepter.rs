@@ -15,7 +15,7 @@ pub enum Mode {
     Digest,
     SetUp,
     CleanUp,
-    GUI,
+    Gui,
 }
 
 /// # CLI引数を受け取る関数
@@ -43,7 +43,7 @@ pub fn accept_cli_arg() -> (Option<String>, DigestAlgorithm, Mode) {
     let arg_len = std::env::args().len();
     debug!("arg_len: {}", arg_len);
     if arg_len == 1 {
-        return (None, DigestAlgorithm::Sha2_256, Mode::GUI);
+        return (None, DigestAlgorithm::Sha2_256, Mode::Gui);
     }
 
     let input_file_path = matches.value_of_lossy("input_file").map(|file| file.to_string()); 
