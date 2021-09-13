@@ -17,6 +17,7 @@ fn main() {
         cli_arg_accepter::Mode::Digest => digest(input_file_path, digest_algorithm),
         cli_arg_accepter::Mode::SetUp => setup(),
         cli_arg_accepter::Mode::CleanUp => cleanup(),
+        cli_arg_accepter::Mode::GUI => gui(),
     }
 
     
@@ -163,4 +164,20 @@ fn cleanup() {
     } else {
         println!("コンテクストメニューから削除できませんでした。");
     }
+}
+
+fn gui() {
+    debug!("GUIモードで起動しました。");
+    let html_content = "<html><body><h1>ハッシュ値計算ツールです。</h1><p>GUIは開発中です。</p></body></html>";
+	
+    web_view::builder()
+        .title("My Project")
+        .content(web_view::Content::Html(html_content))
+        .size(320, 480)
+        .resizable(false)
+        .debug(true)
+        .user_data(())
+        .invoke_handler(|_webview, _arg| Ok(()))
+        .run()
+        .unwrap();
 }
