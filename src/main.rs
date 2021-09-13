@@ -7,7 +7,7 @@ mod context_menu;
 mod hash;
 
 fn main() {
-    std::env::set_var("RUST_LOG", "debug");
+    // std::env::set_var("RUST_LOG", "debug");
     env_logger::init();
 
     debug!("アプリ開始");
