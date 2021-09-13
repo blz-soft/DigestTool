@@ -1,10 +1,10 @@
 //! # ハッシュ値計算ツール
-use std::str::FromStr;
 use log::debug;
-mod hash;
+use std::str::FromStr;
 mod cli_arg_accepter;
-#[cfg(target_os= "windows")]
+#[cfg(target_os = "windows")]
 mod context_menu;
+mod hash;
 
 fn main() {
     std::env::set_var("RUST_LOG", "debug");
@@ -20,17 +20,13 @@ fn main() {
         cli_arg_accepter::Mode::Gui => gui(),
     }
 
-    
     println!("Enterキーを押すと終了します");
     let mut word = String::new();
     std::io::stdin().read_line(&mut word).ok();
     debug!("アプリ終了");
 }
 
-
 fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::DigestAlgorithm) {
-    
-
     // 計測開始
     let pre_time = chrono::Local::now();
 
@@ -39,17 +35,17 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
         Some(s) => s,
         None => {
             debug!("ファイルパスが入力されていませんでした。");
-            println!("ファイルパスが入力されていませんでした。"); 
-            return
+            println!("ファイルパスが入力されていませんでした。");
+            return;
         }
     };
     // ファイルバッファリーダーの取得
-    let input_path = match std::path::PathBuf::from_str(&input_file_path){
+    let input_path = match std::path::PathBuf::from_str(&input_file_path) {
         Ok(p) => p,
         Err(_) => {
             debug!("入力されたファイルパスが誤っています。");
             println!("入力されたファイルパスが誤っています。");
-            return
+            return;
         }
     };
     let input_file = match std::fs::File::open(input_path) {
@@ -57,7 +53,7 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
         Err(_) => {
             debug!("ファイルにアクセスできませんでした。ここか");
             println!("ファイルにアクセスできませんでした。");
-            return
+            return;
         }
     };
     let input_file_size = match input_file.metadata() {
@@ -65,7 +61,7 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
         Err(_) => {
             debug!("ファイルサイズを取得できませんでした。");
             println!("ファイルサイズを取得できませんでした。");
-            return
+            return;
         }
     };
     let mut input_file_reader = std::io::BufReader::new(input_file);
@@ -77,11 +73,11 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
     progress_bar.set_style(progress_bar_style);
     // 1秒に4回プログレスバーを更新すると、少しパフォーマンスに影響出てきそう(2.5GHz 4core)
     progress_bar.set_draw_rate(4);
-    
+
     debug!("ハッシュ値計算開始");
     println!("ハッシュ値を計算しています。");
 
-    let (file_size, hash_value)  = match digest_algorithm {
+    let (file_size, hash_value) = match digest_algorithm {
         cli_arg_accepter::DigestAlgorithm::Sha2_256 => {
             debug!("ハッシュアルゴリズム: Sha2 256");
             println!("ハッシュアルゴリズム: Sha2 256");
@@ -91,11 +87,11 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
                     debug!("{:?}", e);
                     println!("ファイルを読み込みできませんでした。");
                     std::process::exit(0)
-                },
+                }
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
-        },
+        }
         cli_arg_accepter::DigestAlgorithm::Sha2_512 => {
             println!("ハッシュアルゴリズム: Sha2 512");
             let hash_result = hash::sha2_512(&mut input_file_reader, progress_bar);
@@ -104,11 +100,11 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
                     debug!("{:?}", e);
                     println!("ファイルを読み込みできませんでした。");
                     std::process::exit(0)
-                },
+                }
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
-        },
+        }
         cli_arg_accepter::DigestAlgorithm::Sha3_256 => {
             println!("ハッシュアルゴリズム: Sha3 256");
             let hash_result = hash::sha3_256(&mut input_file_reader, progress_bar);
@@ -117,11 +113,11 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
                     debug!("{:?}", e);
                     println!("ファイルを読み込みできませんでした。");
                     std::process::exit(0)
-                },
+                }
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
-        },
+        }
         cli_arg_accepter::DigestAlgorithm::Sha3_512 => {
             println!("ハッシュアルゴリズム: Sha3 512");
             let hash_result = hash::sha3_512(&mut input_file_reader, progress_bar);
@@ -130,19 +126,21 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
                     debug!("{:?}", e);
                     println!("ファイルを読み込みできませんでした。");
                     std::process::exit(0)
-                },
+                }
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
-        },
+        }
     };
 
     let post_time = chrono::Local::now();
     println!("ファイルサイズ: {}MB", file_size / 1_000_000);
     print!("ハッシュ値: [");
-    for i in 0..hash_value.len() { 
+    for i in 0..hash_value.len() {
         print!("{:x}", hash_value[i]);
-        if i != hash_value.len() { print!(", "); }
+        if i != hash_value.len() {
+            print!(", ");
+        }
     }
     println!("]");
     println!("所要時間: {:?}", post_time - pre_time);
@@ -170,7 +168,6 @@ extern crate native_windows_gui as nwg;
 use std::rc::Rc;
 fn gui() {
     debug!("GUIモードで起動しました。");
-
 
     nwg::init().unwrap_or_else(|e| {
         debug!("Failed to init Native Windows GUI");
@@ -203,7 +200,7 @@ fn gui() {
         .parent(&window)
         .build(&mut button_set_context_menu)
         .unwrap();
-    
+
     nwg::Button::builder()
         .text("右クリックメニューからDigest Toolを削除します。")
         .parent(&window)
@@ -213,8 +210,20 @@ fn gui() {
     nwg::GridLayout::builder()
         .parent(&window)
         .spacing(1)
-        .child_item(nwg::GridLayoutItem::new(&button_set_context_menu, 0, 0, 1, 1))
-        .child_item(nwg::GridLayoutItem::new(&button_remove_context_menu, 0, 1, 1, 1))
+        .child_item(nwg::GridLayoutItem::new(
+            &button_set_context_menu,
+            0,
+            0,
+            1,
+            1,
+        ))
+        .child_item(nwg::GridLayoutItem::new(
+            &button_remove_context_menu,
+            0,
+            1,
+            1,
+            1,
+        ))
         .build(&layout)
         .unwrap();
 
@@ -233,20 +242,36 @@ fn gui() {
                 if handle == button_set_context_menu {
                     debug!("右クリックメニューに追加します");
                     if context_menu::set_to_context_menu().is_ok() {
-                        nwg::modal_info_message(&events_window.handle, "Digest Tool", "右クリックメニューに追加しました。");
+                        nwg::modal_info_message(
+                            &events_window.handle,
+                            "Digest Tool",
+                            "右クリックメニューに追加しました。",
+                        );
                     } else {
-                        nwg::modal_info_message(&events_window.handle, "Digest Tool", "右クリックメニューに追加できませんでした。");
+                        nwg::modal_info_message(
+                            &events_window.handle,
+                            "Digest Tool",
+                            "右クリックメニューに追加できませんでした。",
+                        );
                     }
                     // ファイルダイアログ
-                } else if handle == button_remove_context_menu{
+                } else if handle == button_remove_context_menu {
                     debug!("右クリックメニューにから削除します");
                     if context_menu::remove_from_context_menu().is_ok() {
-                        nwg::modal_info_message(&events_window.handle, "Digest Tool", "右クリックメニューから削除しました。");
+                        nwg::modal_info_message(
+                            &events_window.handle,
+                            "Digest Tool",
+                            "右クリックメニューから削除しました。",
+                        );
                     } else {
-                        nwg::modal_info_message(&events_window.handle, "Digest Tool", "右クリックメニューから削除できませんでした。");
+                        nwg::modal_info_message(
+                            &events_window.handle,
+                            "Digest Tool",
+                            "右クリックメニューから削除できませんでした。",
+                        );
                     }
                 }
-            },
+            }
             _ => {}
         }
     });

@@ -152,7 +152,7 @@ dependencies = [
 
 [[package]]
 name = "digest_tool"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "chacha20",
  "chrono",

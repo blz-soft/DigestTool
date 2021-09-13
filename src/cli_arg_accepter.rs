@@ -46,7 +46,9 @@ pub fn accept_cli_arg() -> (Option<String>, DigestAlgorithm, Mode) {
         return (None, DigestAlgorithm::Sha2_256, Mode::Gui);
     }
 
-    let input_file_path = matches.value_of_lossy("input_file").map(|file| file.to_string()); 
+    let input_file_path = matches
+        .value_of_lossy("input_file")
+        .map(|file| file.to_string());
 
     let digest_str = matches.value_of("digest");
     debug!("{:?}", digest_str);
@@ -62,12 +64,15 @@ pub fn accept_cli_arg() -> (Option<String>, DigestAlgorithm, Mode) {
                 let mut word = String::new();
                 std::io::stdin().read_line(&mut word).ok();
                 std::process::exit(0);
-            },
-        }
+            }
+        },
         None => DigestAlgorithm::Sha2_256,
     };
-    
-    let mode = match (matches.occurrences_of("setup"), matches.occurrences_of("clean_up")) {
+
+    let mode = match (
+        matches.occurrences_of("setup"),
+        matches.occurrences_of("clean_up"),
+    ) {
         (0, 0) => Mode::Digest,
         (_, 0) => Mode::SetUp,
         (0, _) => Mode::CleanUp,
@@ -77,9 +82,8 @@ pub fn accept_cli_arg() -> (Option<String>, DigestAlgorithm, Mode) {
             let mut word = String::new();
             std::io::stdin().read_line(&mut word).ok();
             std::process::exit(0);
-        },
+        }
     };
-    
 
     (input_file_path, digest_algorithm, mode)
 }
