@@ -2,6 +2,7 @@
 
 // Cli ArgumentParser
 use clap::*;
+use log::debug;
 
 pub enum DigestAlgorithm {
     Sha2_256,
@@ -40,7 +41,9 @@ pub fn accept_cli_arg() -> (Option<String>, DigestAlgorithm, Mode) {
 
     let input_file_path = matches.value_of_lossy("input_file").map(|file| file.to_string()); 
 
-    let digest_algorithm = match matches.value_of("digetst") {
+    let digest_str = matches.value_of("digest");
+    debug!("{:?}", digest_str);
+    let digest_algorithm = match digest_str {
         Some(algorithm) => match algorithm {
             "sha2_256" => DigestAlgorithm::Sha2_256,
             "sha2_512" => DigestAlgorithm::Sha2_512,

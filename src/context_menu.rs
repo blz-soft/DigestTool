@@ -23,10 +23,10 @@ pub fn set_to_context_menu() -> Result< (), std::io::Error> {
     set_property_to_faile_menu(r"DigestTool\shell\sha3_256", r"'(default)'", r"'Sha3_256'")?;
     set_property_to_faile_menu(r"DigestTool\shell\sha3_512", r"'(default)'", r"'Sha3_512'")?;
     // コマンドをセット
-    set_property_to_faile_menu(r"DigestTool\shell\sha2_256\Command", r"'(default)'", &format!("'\"{}\" -i %V'", std::env::current_exe().unwrap().display()))?;
-    set_property_to_faile_menu(r"DigestTool\shell\sha2_512\Command", r"'(default)'", &format!("'\"{}\" \"-i %V -d sha2_512\"'", std::env::current_exe().unwrap().display()))?;
-    set_property_to_faile_menu(r"DigestTool\shell\sha3_256\Command", r"'(default)'", &format!("'\"{}\" -i %V -d sha3_256'", std::env::current_exe().unwrap().display()))?;
-    set_property_to_faile_menu(r"DigestTool\shell\sha3_512\Command", r"'(default)'", &format!("'\"{}\" \"-i %V -d sha3_512\"'", std::env::current_exe().unwrap().display()))?;
+    set_property_to_faile_menu(r"DigestTool\shell\sha2_256\Command", r"'(default)'", &format!("'\"{}\" -i \"%V\"'", std::env::current_exe().unwrap().display()))?;
+    set_property_to_faile_menu(r"DigestTool\shell\sha2_512\Command", r"'(default)'", &format!("'\"{}\" -i \"%V\" -d sha2_512'", std::env::current_exe().unwrap().display()))?;
+    set_property_to_faile_menu(r"DigestTool\shell\sha3_256\Command", r"'(default)'", &format!("'\"{}\" -i \"%V\" -d sha3_256'", std::env::current_exe().unwrap().display()))?;
+    set_property_to_faile_menu(r"DigestTool\shell\sha3_512\Command", r"'(default)'", &format!("'\"{}\" -i \"%V\" -d sha3_512'", std::env::current_exe().unwrap().display()))?;
 
     Ok(())
 }

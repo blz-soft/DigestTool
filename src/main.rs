@@ -1,12 +1,16 @@
 //! # ハッシュ値計算ツール
 use std::str::FromStr;
+use log::debug;
 mod hash;
 mod cli_arg_accepter;
 #[cfg(target_os= "windows")]
 mod context_menu;
 
 fn main() {
+    // std::env::set_var("RUST_LOG", "debug");
+    env_logger::init();
 
+    debug!("アプリ開始");
     let (input_file_path, digest_algorithm, mode) = cli_arg_accepter::accept_cli_arg();
 
     match mode {
@@ -19,6 +23,7 @@ fn main() {
     println!("Enterキーを押すと終了します");
     let mut word = String::new();
     std::io::stdin().read_line(&mut word).ok();
+    debug!("アプリ終了");
 }
 
 
@@ -31,20 +36,36 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
     // ファイルパス入力を取得する
     let input_file_path = match input_file_path {
         Some(s) => s,
-        None => {println!("ファイルパスが入力されていませんでした。"); return}
+        None => {
+            debug!("ファイルパスが入力されていませんでした。");
+            println!("ファイルパスが入力されていませんでした。"); 
+            return
+        }
     };
     // ファイルバッファリーダーの取得
     let input_path = match std::path::PathBuf::from_str(&input_file_path){
         Ok(p) => p,
-        Err(_) => {println!("入力されたファイルパスが誤っています。"); return}
+        Err(_) => {
+            debug!("入力されたファイルパスが誤っています。");
+            println!("入力されたファイルパスが誤っています。");
+            return
+        }
     };
     let input_file = match std::fs::File::open(input_path) {
         Ok(f) => f,
-        Err(_) => {println!("ファイルにアクセスできませんでした。"); return}
+        Err(_) => {
+            debug!("ファイルにアクセスできませんでした。ここか");
+            println!("ファイルにアクセスできませんでした。");
+            return
+        }
     };
     let input_file_size = match input_file.metadata() {
         Ok(meta) => meta.len(),
-        Err(_) => {println!("ファイルサイズを取得できませんでした。"); return}
+        Err(_) => {
+            debug!("ファイルサイズを取得できませんでした。");
+            println!("ファイルサイズを取得できませんでした。");
+            return
+        }
     };
     let mut input_file_reader = std::io::BufReader::new(input_file);
 
@@ -56,14 +77,20 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
     // 1秒に4回プログレスバーを更新すると、少しパフォーマンスに影響出てきそう(2.5GHz 4core)
     progress_bar.set_draw_rate(4);
     
+    debug!("ハッシュ値計算開始");
     println!("ハッシュ値を計算しています。");
 
     let (file_size, hash_value)  = match digest_algorithm {
         cli_arg_accepter::DigestAlgorithm::Sha2_256 => {
+            debug!("ハッシュアルゴリズム: Sha2 256");
             println!("ハッシュアルゴリズム: Sha2 256");
             let hash_result = hash::sha2_256(&mut input_file_reader, progress_bar);
             let (file_size, hash_value) = match hash_result {
-                Err(_e) => {println!("ファイルを読み込みできませんでした。"); std::process::exit(0)},
+                Err(e) => {
+                    debug!("{:?}", e);
+                    println!("ファイルを読み込みできませんでした。");
+                    std::process::exit(0)
+                },
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
@@ -72,7 +99,11 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
             println!("ハッシュアルゴリズム: Sha2 512");
             let hash_result = hash::sha2_512(&mut input_file_reader, progress_bar);
             let (file_size, hash_value) = match hash_result {
-                Err(_e) => {println!("ファイルを読み込みできませんでした。"); std::process::exit(0)},
+                Err(e) => {
+                    debug!("{:?}", e);
+                    println!("ファイルを読み込みできませんでした。");
+                    std::process::exit(0)
+                },
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
@@ -81,7 +112,11 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
             println!("ハッシュアルゴリズム: Sha3 256");
             let hash_result = hash::sha3_256(&mut input_file_reader, progress_bar);
             let (file_size, hash_value) = match hash_result {
-                Err(_e) => {println!("ファイルを読み込みできませんでした。"); std::process::exit(0)},
+                Err(e) => {
+                    debug!("{:?}", e);
+                    println!("ファイルを読み込みできませんでした。");
+                    std::process::exit(0)
+                },
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
@@ -90,7 +125,11 @@ fn digest(input_file_path: Option<String>, digest_algorithm: cli_arg_accepter::D
             println!("ハッシュアルゴリズム: Sha3 512");
             let hash_result = hash::sha3_512(&mut input_file_reader, progress_bar);
             let (file_size, hash_value) = match hash_result {
-                Err(_e) => {println!("ファイルを読み込みできませんでした。"); std::process::exit(0)},
+                Err(e) => {
+                    debug!("{:?}", e);
+                    println!("ファイルを読み込みできませんでした。");
+                    std::process::exit(0)
+                },
                 Ok(result) => result,
             };
             (file_size, hash_value.to_vec())
